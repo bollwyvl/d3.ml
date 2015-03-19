@@ -2,23 +2,52 @@ body {
   font-size: 12px;
 }
 
-#toolbar{
+#page-nav{
   position: fixed;
+  height: 100%;
+  width: 80px;
   right: 0;
   top: 0;
+  bottom: 0;
+  text-align: center;
 }
 
-#toggle {
-  margin-top: 1.25em;
+#page-nav .brand-logo{
+  font-size: 200%;
+  width: 100%;
+  position: relative;
+}
+
+#page-nav li ,
+#page-nav a {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#template, #load {
+  position: fixed;
+  right: 80px;
+  top: 0;
+  width: 400px;
+}
+
+#load {
+  background-color: white;
+  display: none;
 }
 
 #template {
-  position: fixed;
-  right: 0;
-  width: 400px;
-  top: 68px;
   height: 100%;
   opacity: 0.7;
+}
+
+#html {
+  right: 480px;
+  left: 0;
+  position: fixed;
+  top: 0;
+  display: none;
 }
 
 .CodeMirror {

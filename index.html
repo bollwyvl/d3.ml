@@ -1,28 +1,22 @@
----
----
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <style>
-      /* Deploy */
-      @import "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css";
-      @import "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.0.0/codemirror.min.css";
-      @import "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.0.0/theme/blackboard.css";
-      @import "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.0.0/addon/fold/foldgutter.css";
-      
-      
-      
-      /* Development 
-      @import "/bower_components/materialize/dist/css/materialize.min.css";
-      @import "/bower_components/codemirror/lib/codemirror.css";
-      @import "/bower_components/codemirror/theme/blackboard.css";
-      @import "/bower_components/codemirror/addon/fold/foldgutter.css";
+      /* Deploy
+
+      @import "./css/prod.css";
       */
-      
-      @import "{{site.baseurl}}/css/app.css"
+
+
+      /* Development      */
+      @import "./css/dev.css";
+
+      @import "./css/app.css";
     </style>
   </head>
   <body>
+    <div id="html"></div>
+
     <div id="preview" class="row">
       <div class="container">
         <h5>This tool creates webpages by the key stroke.</h5>
@@ -32,24 +26,43 @@
 
     <div id="template" class="mode"></div>
 
-    <div id="toolbar" class="col">
-      <a id="toggle" class="waves-effect waves-light btn col s2">
-        <i class="mdi-image-edit"></i>
-      </a>
-      <a id="preview-toggle" class="waves-effect waves-light btn col s2">
-        HTML
-      </a>
-
-      <div class="row">
-        <div class="input-field col s10 download">
-          <i class="mdi-file-file-download prefix"></i>
-          <input id="template-url" type="text" class="validate" value="./templates.yml" >
-          <label for="template-url">Template URL</label>
-        </div>
+    <div id="load">
+      <div class="input-field">
+        <input id="template-url" type="text" class="validate" value="./templates.yml" >
+        <label for="template-url">Template URL</label>
       </div>
     </div>
 
-    <!-- Deploy -->
+    <nav id="page-nav" class="light-blue darken-3">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">d3.ml</a>
+        <ul>
+          <li>
+            <a id="toggle-template" class="toggle waves-effect waves-light">
+              <i class="mdi-image-edit"></i>
+            </a>
+          </li>
+          <li>
+            <a id="toggle-preview" class="toggle waves-effect waves-light">
+              <i class="mdi-av-web"></i>
+            </a>
+          </li>
+          <li>
+            <a id="toggle-html" class="toggle waves-effect waves-light">
+              <i class="mdi-editor-format-align-left"></i>
+            </a>
+          </li>
+          <li>
+            <a id="toggle-load" class="toggle waves-effect waves-light">
+              <i class="mdi-file-file-download"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+
+    <!-- Deploy
     <script src="//cdn.jsdelivr.net/g/d3js,jquery">
       </script>
 
@@ -71,17 +84,20 @@
       </script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/js-yaml/3.2.7/js-yaml.min.js">
-      </script>
-    
-    
-    <!-- Development 
+      </script> -->
+
+
+    <!-- Development
+  -->
     <script src="/bower_components/d3/d3.min.js">
-          </script>
+      </script>
     <script src="/bower_components/jquery/dist/jquery.min.js">
-          </script>
+      </script>
     <script src="/bower_components/codemirror/lib/codemirror.js">
-          </script>
+      </script>
     <script src="/bower_components/codemirror/mode/yaml/yaml.js">
+      </script>
+    <script src="/bower_components/codemirror/mode/xml/xml.js">
       </script>
     <script src="/bower_components/codemirror/addon/fold/foldcode.js">
       </script>
@@ -95,120 +111,12 @@
       </script>
     <script src="/bower_components/js-yaml/dist/js-yaml.min.js">
       </script>
-    -->
-    
-    <script src="{{site.baseurl}}/js/d3.ml.js">
+    <script src="/bower_components/vkbeautify-wrapper/dist/vkbeautify.0.99.00.beta.js">
       </script>
 
-
-    <script>
-      ;( function(){
-        var toolbarHeight = 68,
-          showEditor = 1;
-
-        var template = d3.select('#template'),
-          preview = d3.select('#preview'),
-          templateUrl = d3.select("#template-url"),
-          win = d3.select(window);
-
-        var editor = CodeMirror(template.node(), {
-          theme: "blackboard",
-          mode: "yaml",
-          lineNumbers: true,
-          lineWrapping: true,
-          extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
-          foldGutter: {
-            rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.indent, CodeMirror.fold.comment)
-          },
-          gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
-
-
-
-        d3.selectAll('#toggle')
-          .on('click', function(){
-            template.style('display',
-              (showEditor = !showEditor) ? "block" : "none"
-            );
-          });
-        
-        d3.selectAll('#preview-toggle')
-          .datum( 'HTML' )
-          .on( 'click', function(d){
-             if (d == 'HTML'){
-               d3.select('#preview')
-                 .text( function(){
-                    return this.innerHTML
-                 })
-               
-               d3.select(this)
-                 .datum( 'preview')
-                 .text( function(d){ return d;})
-             } else if ( d== 'preview' ){
-               d3.select('#preview')
-                 .html( function(){
-                    return this.innerText
-                 })
-               d3.select(this)
-                 .datum( 'HTML')
-                 .text( function(d){ return d;})
-
-             }
-               
-          })
-
-        editor.on('change', update);
-        win.on("resize", resize);
-        templateUrl.on("change", updateHash);
-        win.on("hashchange", load)
-
-        win.on("resize")();
-
-        if(hash()){
-          templateUrl.property("value", hash());
-        }
-        templateUrl.on("change")();
-
-        function hash(value){
-          if(value){
-            window.location.hash = value;
-          }
-          return window.location.hash.slice(1);
-        }
-
-        function updateHash(){
-          hash(templateUrl.property("value"));
-          win.on("hashchange")()
-        }
-
-        function load(){
-          d3.text(hash(), 'text/yaml', function(d){
-            editor.setValue(d);
-          });
-        }
-
-        function update(){
-          d3.ml.templates = jsyaml.load( editor.getValue() );
-
-          preview.call( function(s){
-            s.html('')
-            d3.entries( d3.ml.templates['display'] )
-              .forEach( function(d){
-               if (d3.ml.templates[d.key][d.value] ){
-                 d3.ml.build( s, d3.ml.templates[d.key][d.value] )
-               }
-                 
-              });
-          });
-        }
-
-        function resize(){
-          editor.setSize(
-            null,
-            (win.node().innerHeight - toolbarHeight) + "px"
-          )
-        }
-      })();
-    </script>
+    <script src="./js/d3.ml.js">
+      </script>
+    <script src="./js/editor.js">
+      </script>
   </body>
 </html>
